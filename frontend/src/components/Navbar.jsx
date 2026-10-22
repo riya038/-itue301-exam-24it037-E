@@ -1,42 +1,89 @@
 import React from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-export default function Navbar({ activeTab, setActiveTab }) {
+/**
+ * Navigation component using React Router NavLinks for client-side navigation
+ * without full-page reloads.
+ */
+export default function Navbar() {
+  const { customer, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <nav className="navbar">
-      <div className="brand">
+      <NavLink to="/" className="brand">
         <span className="brand-icon">🚗</span>
         <span>DriveEasy</span>
-      </div>
+      </NavLink>
 
       <div className="nav-links">
-        <button
-          type="button"
-          className={`nav-link ${activeTab === 'fleet' ? 'active' : ''}`}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
-          onClick={() => setActiveTab('fleet')}
+        <NavLink
+          to="/fleet"
+          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
         >
           Fleet
-        </button>
-        <button
-          type="button"
-          className={`nav-link ${activeTab === 'bookings' ? 'active' : ''}`}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
-          onClick={() => setActiveTab('bookings')}
+        </NavLink>
+
+        <NavLink
+          to="/my-bookings"
+          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
         >
           My Bookings
-        </button>
-        <button
-          type="button"
-          className={`nav-link ${activeTab === 'login' ? 'active' : ''}`}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
-          onClick={() => setActiveTab('login')}
+        </NavLink>
+
+        <NavLink
+          to="/admin"
+          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
         >
-          Login
-        </button>
+          Admin
+        </NavLink>
+
+        {!isAuthenticated ? (
+          <NavLink
+            to="/"
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            Login
+          </NavLink>
+        ) : null}
       </div>
 
-      <div className="user-badge">
-        <span>👤 Guest User</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        {isAuthenticated ? (
+          <>
+            <div className="user-badge">
+              <span>👤 {customer?.name || 'Customer'}</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="btn-logout"
+            >
+              Log Out
+            </button>
+          </>
+        ) : (
+          <NavLink
+            to="/"
+            style={{
+              padding: '0.4rem 1rem',
+              backgroundColor: 'var(--primary)',
+              color: 'white',
+              borderRadius: '9999px',
+              textDecoration: 'none',
+              fontSize: '0.85rem',
+              fontWeight: 700
+            }}
+          >
+            Sign In
+          </NavLink>
+        )}
       </div>
     </nav>
   );

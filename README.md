@@ -72,3 +72,16 @@ The Express backend runs at `http://localhost:5000/`.
 - Implemented ternary logic for rendering **"Book Now"** button when `available: true`, or **"Not Available"** badge when `available: false`.
 - Created pages: `LoginPage`, `FleetPage`, and `MyBookingsPage`.
 - Composition and prop-passing demonstrated in `FleetPage`.
+
+### Task 2: React Routing and State Management
+- Configured React Router (`react-router-dom`) with client-side navigation without full-page reloads.
+- Configured routes:
+  - `/` -> `LoginPage`
+  - `/fleet` -> `FleetPage` (protected)
+  - `/my-bookings` -> `MyBookingsPage` (protected)
+  - `/admin` -> `AdminPanel` (lazy-loaded with `React.lazy()` and `Suspense`)
+- Implemented `AuthContext` managing `{ customer, token, login, logout, isAuthenticated }`.
+- Implemented `ProtectedRoute` wrapper redirecting unauthenticated users to `/`.
+- Created `Navbar` with React Router `NavLink`s and dynamic authentication status.
+- Implemented Booking Form in `FleetPage` using `useState` for `selectedVehicle`, `pickupDate`, and `returnDate`.
+- Meaningful state utilization: real-time duration and price calculation, live active selection banner, and auto-populating vehicle when selecting a card.
