@@ -25,7 +25,7 @@ export default function LoginPage() {
     const DEFAULT_CORRECT_PASSWORD = 'password123';
 
     if (password !== DEFAULT_CORRECT_PASSWORD) {
-      setError('❌ Invalid password! The password you entered is incorrect. (Default is: password123)');
+      setError('❌ Invalid password! The password you entered is incorrect. ');
       return;
     }
 
@@ -121,9 +121,9 @@ export default function LoginPage() {
                 setError('');
               }}
             />
-            <small style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '0.3rem', display: 'block' }}>
+            {/* <small style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '0.3rem', display: 'block' }}>
               Default Password: <code>password123</code>
-            </small>
+            </small> */}
           </div>
 
           <button type="submit" className="btn-primary" style={{ marginTop: '0.5rem' }}>
