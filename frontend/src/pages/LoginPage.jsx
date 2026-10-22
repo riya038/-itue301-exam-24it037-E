@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // Set default credentials
+  const [email, setEmail] = useState('riya038@driveeasy.com');
+  const [password, setPassword] = useState('password123');
   const [error, setError] = useState('');
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -16,20 +17,44 @@ export default function LoginPage() {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError('Please provide both email and password.');
+    setError('');
+
+    // Check if password matches the default/correct password
+    const DEFAULT_CORRECT_PASSWORD = 'password123';
+
+    if (password !== DEFAULT_CORRECT_PASSWORD) {
+      setError('❌ Invalid password! The password you entered is incorrect. (Default is: password123)');
       return;
     }
 
-    // Mock successful authentication for frontend routing demonstration
+    try {
+      // Attempt backend API login if available
+      const response = await fetch('http://localhost:5000/api/v1/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.token) {
+        login(data.customer, data.token);
+        navigate('/fleet');
+        return;
+      }
+    } catch {
+      // Fallback if backend is starting or offline
+    }
+
+    // Local authentication fallback
     const customer = {
-      id: 'cust-24it037',
+      id: '66c8b1a20000000000000001',
       name: email.split('@')[0].toUpperCase(),
       email: email,
       phone: '9876543210',
-      licenseNumber: 'GJ-06-2026-037'
+      licenseNumber: 'GJ-06-2026-24IT037'
     };
     const token = 'jwt_token_24it037_driveeasy_auth';
     login(customer, token);
@@ -38,7 +63,7 @@ export default function LoginPage() {
 
   const handleQuickLogin = () => {
     const customer = {
-      id: 'cust-24it037',
+      id: '66c8b1a20000000000000001',
       name: 'Riya Patel',
       email: 'riya038@driveeasy.com',
       phone: '9876543210',
@@ -58,7 +83,12 @@ export default function LoginPage() {
           <p className="page-subtitle">Access your protected fleet reservations</p>
         </div>
 
-        {error && <div className="error-banner">{error}</div>}
+        {/* Error message displayed if wrong password is typed */}
+        {error && (
+          <div className="error-banner" style={{ fontWeight: 600 }}>
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -70,7 +100,10 @@ export default function LoginPage() {
               className="form-input"
               placeholder="e.g. riya038@driveeasy.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError('');
+              }}
             />
           </div>
 
@@ -83,8 +116,14 @@ export default function LoginPage() {
               className="form-input"
               placeholder="••••••••"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError('');
+              }}
             />
+            <small style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '0.3rem', display: 'block' }}>
+              Default Password: <code>password123</code>
+            </small>
           </div>
 
           <button type="submit" className="btn-primary" style={{ marginTop: '0.5rem' }}>
