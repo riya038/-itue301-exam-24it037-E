@@ -99,3 +99,21 @@ The Express backend runs at `http://localhost:5000/`.
   | `POST` | `/api/v1/bookings` | Protected | Create booking & mark vehicle unavailable (201 Created) |
   | `GET` | `/api/v1/bookings/my` | Protected | Return customer's bookings with populated vehicle & customer |
   | `PATCH` | `/api/v1/bookings/:id/status` | Protected | Update booking status (`reserved`, `ongoing`, `completed`, `cancelled`) |
+
+### Task 4: REST API Consumption in React
+- Consumed `GET /api/v1/vehicles` inside `FleetPage` on component mount via `useEffect()`.
+- Maintained three distinct states: `vehicles`, `loading`, and `error`.
+- Displays loading spinner indicator while the request is in progress.
+- Displays friendly error banner with a retry action if the request fails.
+- Renders dynamic grid of `VehicleCard` components from API response (not hardcoded).
+- Added client-side vehicle type filter (`All` \| `Hatchback` \| `Sedan` \| `SUV`) derived from state with `.filter()`, avoiding redundant API roundtrips.
+- Connected booking form to `POST /api/v1/bookings` with Bearer token authentication.
+
+### Task 5: MongoDB + Mongoose Schema Design and Validation
+- Created Mongoose schemas with schema-level validation:
+  - **Customer**: `name` (required), `email` (required, unique), `licenseNumber` (required, unique).
+  - **Vehicle**: `model` (required), `type` (required, enum), `pricePerDay` (min 0), `available` (Boolean, default true).
+  - **Booking**: `customerId` (ref Customer), `vehicleId` (ref Vehicle), `pickupDate` (required), `returnDate` (required), `status` (enum: `reserved`, `ongoing`, `completed`, `cancelled`, default `reserved`).
+- Atomic double-booking prevention: `POST /api/v1/bookings` verifies `vehicle.available === true`, returns structured 400 error if unavailable, creates booking, and updates `vehicle.available = false`.
+- Populated references: `GET /api/v1/bookings/my` populates customer (`name email`) and vehicle (`model type`).
+- Connection string securely loaded via `.env` with a committed `.env.example`.
