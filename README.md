@@ -85,3 +85,17 @@ The Express backend runs at `http://localhost:5000/`.
 - Created `Navbar` with React Router `NavLink`s and dynamic authentication status.
 - Implemented Booking Form in `FleetPage` using `useState` for `selectedVehicle`, `pickupDate`, and `returnDate`.
 - Meaningful state utilization: real-time duration and price calculation, live active selection banner, and auto-populating vehicle when selecting a card.
+
+### Task 3: Express REST API + Middleware
+- Built complete Express backend running at `http://localhost:5000/`.
+- Implemented custom `requestLogger` middleware logging `[METHOD] [PATH] [TIMESTAMP]` globally for every request.
+- Implemented `authGuard` middleware validating JWT Bearer tokens and returning 401 Unauthorized for missing/invalid tokens on all protected routes.
+- Implemented global `errorHandler` middleware returning structured JSON error responses.
+- Implemented all 5 REST endpoints under `/api/v1/`:
+  | Method | Endpoint | Access | Purpose |
+  | --- | --- | --- | --- |
+  | `POST` | `/api/v1/auth/login` | Public | Authenticate customer & issue JWT token |
+  | `GET` | `/api/v1/vehicles` | Public | Return all fleet vehicles |
+  | `POST` | `/api/v1/bookings` | Protected | Create booking & mark vehicle unavailable (201 Created) |
+  | `GET` | `/api/v1/bookings/my` | Protected | Return customer's bookings with populated vehicle & customer |
+  | `PATCH` | `/api/v1/bookings/:id/status` | Protected | Update booking status (`reserved`, `ongoing`, `completed`, `cancelled`) |
